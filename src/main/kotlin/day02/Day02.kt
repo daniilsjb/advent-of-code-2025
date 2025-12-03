@@ -18,27 +18,22 @@ fun main() {
     println("Answer: ${part2(data)}")
 }
 
-private data class Range(
-    val from: Long,
-    val to: Long,
-)
-
-private fun parse(path: String): List<Range> =
+private fun parse(path: String): List<LongRange> =
     File(path)
         .readText()
         .trim()
         .split(",")
         .map { it.toRange() }
 
-private fun String.toRange(): Range {
+private fun String.toRange(): LongRange {
     val (from, to) = this.split("-")
-    return Range(from.toLong(), to.toLong())
+    return from.toLong()..to.toLong()
 }
 
-private fun part1(data: List<Range>): Long {
+private fun part1(data: List<LongRange>): Long {
     var sum = 0L
-    for ((from, to) in data) {
-        for (value in from..to) {
+    for (range in data) {
+        for (value in range) {
             val digits = value.toString()
             val lhs = digits.take(digits.length / 2)
             val rhs = digits.substring(digits.length / 2)
@@ -50,10 +45,10 @@ private fun part1(data: List<Range>): Long {
     return sum
 }
 
-private fun part2(data: List<Range>): Long {
+private fun part2(data: List<LongRange>): Long {
     var sum = 0L
-    for ((from, to) in data) {
-        outer@for (value in from..to) {
+    for (range in data) {
+        outer@for (value in range) {
             val digits = value.toString()
             for (n in 1..digits.length / 2) {
                 val chunks = digits.chunked(n)
