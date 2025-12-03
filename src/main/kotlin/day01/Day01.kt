@@ -1,6 +1,7 @@
 package day01
 
 import java.io.File
+import kotlin.math.absoluteValue
 
 fun main() {
     val data = parse("src/main/kotlin/day01/Day01.txt")
@@ -18,39 +19,23 @@ fun main() {
     println("Answer: ${part2(data)}")
 }
 
-private enum class Direction { Left, Right }
-
-private data class Rotation(
-    val direction: Direction,
-    val distance: Int,
-)
-
-private fun parse(path: String): List<Rotation> =
+private fun parse(path: String): List<Int> =
     File(path)
         .readLines()
         .filter { it.isNotBlank() }
         .map { it.toRotation() }
 
-private fun String.toRotation(): Rotation {
-    val direction = when (this[0]) {
-        'L' -> Direction.Left
-        'R' -> Direction.Right
-        else -> error("Invalid rotation: $this")
-    }
-
+private fun String.toRotation(): Int {
+    val direction = if (this[0] == 'L') -1 else 1
     val distance = this.substring(1).toInt()
-    return Rotation(direction, distance)
+    return direction * distance
 }
 
-private fun part1(data: List<Rotation>): Int {
+private fun part1(data: List<Int>): Int {
     var dial = 50
     var counter = 0
-    for ((direction, distance) in data) {
-        if (direction == Direction.Right) {
-            dial += distance % 100
-        } else {
-            dial -= distance % 100
-        }
+    for (rotation in data) {
+        dial += rotation % 100
 
         if (dial > 99) {
             dial -= 100
@@ -65,18 +50,14 @@ private fun part1(data: List<Rotation>): Int {
     return counter
 }
 
-private fun part2(data: List<Rotation>): Int {
+private fun part2(data: List<Int>): Int {
     var dial = 50
     var counter = 0
-    for ((direction, distance) in data) {
-        counter += distance / 100
+    for (rotation in data) {
+        counter += rotation.absoluteValue / 100
 
         val prev = dial
-        if (direction == Direction.Right) {
-            dial += distance % 100
-        } else {
-            dial -= distance % 100
-        }
+        dial += rotation % 100
 
         if (prev != 0 && dial <= 0) {
             counter += 1
