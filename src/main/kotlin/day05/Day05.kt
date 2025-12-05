@@ -53,11 +53,10 @@ private fun part2(data: Database): Long {
     val nonOverlappingRanges = mutableListOf<LongRange>()
 
     outer@for (range in data.ranges) {
-        val removed = mutableSetOf<LongRange>()
-
+        val covered = mutableSetOf<LongRange>()
         var clipped = range
-        var done = false
 
+        var done = false
         inner@while (!done) {
             for (other in nonOverlappingRanges) {
                 if (clipped in other) {
@@ -66,7 +65,7 @@ private fun part2(data: Database): Long {
                 }
 
                 if (other in clipped) {
-                    removed += other
+                    covered += other
                     continue
                 }
 
@@ -74,6 +73,7 @@ private fun part2(data: Database): Long {
                     clipped = (other.last + 1)..clipped.last
                     continue@inner
                 }
+
                 if (clipped.last in other) {
                     clipped = clipped.first..(other.first - 1)
                     continue@inner
@@ -83,7 +83,7 @@ private fun part2(data: Database): Long {
             done = true
         }
 
-        nonOverlappingRanges.removeAll(removed)
+        nonOverlappingRanges.removeAll(covered)
         nonOverlappingRanges += clipped
     }
 
