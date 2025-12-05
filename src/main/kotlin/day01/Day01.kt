@@ -20,10 +20,7 @@ fun main() {
 }
 
 private fun parse(path: String): List<Int> =
-    File(path)
-        .readLines()
-        .filter { it.isNotBlank() }
-        .map { it.toRotation() }
+    File(path).readLines().map { it.toRotation() }
 
 private fun String.toRotation(): Int {
     val direction = if (this[0] == 'L') -1 else 1
